@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { reactive, toRefs, inject } from 'vue';
+import { TAddTodo } from '../../models/todo';
 
+const noop = () => {};
 const today = inject<string>('today');
-const addTodo = inject<any>('addTodo');
+const addTodo = inject<TAddTodo>('addTodo') || noop;
 const val_obj = reactive({
   job: '',
   date: today,
@@ -10,8 +12,9 @@ const val_obj = reactive({
 });
 
 const onAddTodo = () => {
-  if (val_obj.job.length > 0) {
+  if (val_obj.job.length > 0 && val_obj.date) {
     addTodo(val_obj.job, val_obj.date);
+    
     val_obj.job = '';
     val_obj.date = today;
   }

@@ -3,15 +3,15 @@ import { ref, readonly, provide } from 'vue';
 import { useStorage } from '../../compositions/storage';
 import TodoListNew from './TodoListNew.vue';
 import TodoListMain from './TodoListMain.vue';
-import { ITodo } from '../../model/todo';
+import { ITodo } from '../../models/todo';
 
-const todos = ref<any>([]);
 const { loadTodos, saveTodos, storageId } = useStorage();
+const todos = ref<ITodo[]>([]);
 
 provide('todos', readonly(todos));
 
-const initTodos = (init_todos: any) => {
-  todos.value = init_todos;
+const initTodos = (initData: ITodo[]) => {
+  todos.value = initData;
 }
 
 const addTodo = (job: string, date: string) => {
@@ -26,14 +26,17 @@ const addTodo = (job: string, date: string) => {
 
 const removeTodo = (id: number) => {
   todos.value.splice(id, 1);
-  todos.value.forEach((todo: any, idx: number) => {
+  todos.value.forEach((todo: ITodo, idx: number) => {
     todo.id = idx;
   });
   saveTodos(todos);
 };
 
 const completeTodo = (id: number) => {
-  todos.value.find((todo: any) => todo.id === id).completed = true;
+  const target = todos.value.find((todo: ITodo) => todo.id === id);
+  if (target) {
+    target.completed = true;
+  }
   saveTodos(todos);
 };
 

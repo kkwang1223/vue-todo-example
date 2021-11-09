@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { inject } from 'vue';
-import { ITodo } from '../../model/todo';
+import { ITodo, TCompleteTodo, TRemovTodo } from '../../models/todo';
 
 interface IProps {
   data: ITodo[];
 }
-
+const noop = () => {};
 const { data } = defineProps<IProps>();
-const removeTodo = inject<any>('removeTodo');
-const completeTodo = inject<any>('completeTodo');
+const removeTodo = inject<TRemovTodo>('removeTodo') || noop;
+const completeTodo = inject<TCompleteTodo>('completeTodo') || noop;
 const today = inject<string>('today');
 const menu = [
   {
