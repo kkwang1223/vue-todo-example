@@ -5,11 +5,10 @@ import { ITodo, TCompleteTodo, TRemovTodo } from '../../models/todo';
 interface IProps {
   data: ITodo[];
 }
-const noop = () => {};
 const { data } = defineProps<IProps>();
-const removeTodo = inject<TRemovTodo>('removeTodo') || noop;
-const completeTodo = inject<TCompleteTodo>('completeTodo') || noop;
-const today = inject<string>('today');
+const removeTodo = inject<TRemovTodo>('removeTodo', () => {});
+const completeTodo = inject<TCompleteTodo>('completeTodo', () => {});
+const today = inject<string>('today', '');
 const menu = [
   {
     str: '할일 삭제',
