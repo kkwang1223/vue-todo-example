@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref, watch, provide, inject } from 'vue';
+import { Ref, ref, watch, provide, inject } from 'vue';
 import { useFilter } from '../../compositions/useFilter';
 
 import TodoListMenu from './TodoListMenu.vue';
 import TodoList from './TodoList.vue';
-import { ITodo, IFilters } from '../../model/todo';
+import { ITodo, IFilters, IGroupByTodos } from '../../models/todo';
 
 const { getPendingTodos, getActiveTodayTodos, getCompletedTodayTodos, getAllTodayTodos, getAllTodos } = useFilter();
 const filter = ref(0);
-const filtered_todos = ref<any>([]);
-const pending_todos = ref<any>([]);
+const filtered_todos = ref<IGroupByTodos>({});
+const pending_todos = ref<ITodo[]>([]);
 const use_category = ref(false);
-const todos = inject<any>('todos');
+const todos = inject<Ref<ITodo[]>>('todos');
 
 const filters: IFilters = {
   0: {
@@ -39,7 +39,7 @@ const filters: IFilters = {
 provide('filters', filters);
 
 const groupBy = (todos: ITodo[]) => {
-  return todos.reduce((acc: any, cur: ITodo) => {
+  return todos.reduce((acc: IGroupByTodos, cur: ITodo) => {
     acc[cur['date']] = acc[cur['date']] || [];
     acc[cur['date']].push(cur);
     return acc;
@@ -50,7 +50,7 @@ const onChangeFilter = (filter_idx: number) => {
   filter.value = Number(filter_idx);
 };
 
-watch([() => filter.value, todos.value],
+todos && watch([() => filter.value, todos.value],
   ([new_filter, new_todos], [old_filter, old_todos]) => {
     pending_todos.value = getPendingTodos(todos);
     if (typeof new_filter !== 'undefined') {

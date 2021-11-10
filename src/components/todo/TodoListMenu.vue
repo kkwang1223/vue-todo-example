@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, watch, computed, inject } from 'vue';
+import { IFilters } from '../../models/todo';
 
 const emits = defineEmits(['changeFilter']);
-const filters = inject<any>('filters');
+const filters = inject<IFilters>('filters') || {};
 const filter = ref(0);
 
 const state = computed(() => {
@@ -12,10 +13,6 @@ const state = computed(() => {
 watch(() => filter.value, (item) => {
   emits('changeFilter', item);
 });
-
-const onClick = (key: any) => {
-  filter.value = key;
-}
 
 </script>
 
@@ -32,8 +29,8 @@ const onClick = (key: any) => {
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
           <li v-for="key in Object.keys(filters)" :key="key">
-            <a class="dropdown-item" @click="onClick(key)">
-              {{filters[key].str}}
+            <a class="dropdown-item" @click="filter = Number(key)">
+              {{filters[Number(key)].str}}
             </a>
           </li>
         </ul>

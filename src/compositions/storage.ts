@@ -1,19 +1,20 @@
-import { reactive, toRefs } from 'vue';
+import { Ref, reactive, toRefs } from 'vue';
+import { ITodo } from '../models/todo';
 
 export const useStorage = () => {
   const KEY = 'my-todo-list';
   const storageObj = reactive({ storageId: 0 });
   
-  const loadTodos = (initTodos: any) => {
+  const loadTodos = (initTodos: (todos: ITodo[]) => void) => {
     const tempTodos = JSON.parse(localStorage.getItem(KEY) || '[]');
-    tempTodos.forEach((todo: any, idx: number) => {
+    tempTodos.forEach((todo: ITodo, idx: number) => {
       todo.id = idx;
     });
     storageObj.storageId = tempTodos.length;
-    initTodos(tempTodos);
+    initTodos && initTodos(tempTodos);
   };
 
-  const saveTodos = (todos: any) => {
+  const saveTodos = (todos: Ref<ITodo[]>) => {
     localStorage.setItem(KEY, JSON.stringify(todos.value));
   };
 
